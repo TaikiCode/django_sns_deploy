@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+
+{% block content %}
+
+
+<div class="container-fluid mt-3">
+    {% if post_added %}
+    <div class="alert alert-success text-center" role="alert">
+        投稿しました！
+    </div>
+    {% endif %}
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-7">
+            <div class="button mx-auto" data-toggle="collapse" data-target="#collapse_post" aria-expanded="false" aria-controls="collapse_post">
+                <button class="btn btn-lg btn-outline-secondary btn-block mx-auto">
+                    新規投稿
+                </button>
+            </div>
+            <div class="collapse" id="collapse_post">
+                <div class="card">
+                    <div class="card-body pb-2">
+                        <form action="" method="POST" class='ui form' enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div>
+                                {% render_field p_form.content class='form-control' %}
+                            </div>
+                            <div class="my-2">
+                                {% render_field p_form.image class='form-control text-muted' %}
+                            </div>
+                            <hr>
+                            <div class="text-center">
+                                <button class="btn btn-outline-secondary" type="submit" name="submit_p_form">投稿する</button>
+                            </div>                      
+                        </form>
+                    </div>
+                </div>    
+            </div>
+        {% for post in posts %}
+            <div class="card my-3 shadow-lg rounded">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-12 col-md-8 text-left">
+                            <p class="card-text"><small class="text-muted">{{ post.author.user }} - {{ post.created|timesince}}前</small></p>
+                        </div>
+                        <div class="col-6 col-md-4 text-right">
+                            <a href="#" class="btn">編集</a>
+                            <a href="#" class="btn">削除</a>
+                        </div>
+                    </div>
+                </div>
+                {% if post.image %}
+                <img class="card-img-top" src="{{ post.image.url }}" alt="">
+                {% endif %}
+                <div class="card-body">
+                    <p class="card-text">{{ post.content }}</p>
+
+                    <i class="fa fa-comment"></i>
+                    <i class="fa fa-heart"></i>
+                </div>
+                <div class="card-footer">
+                    <button type="button" class="btn btn-light text-muted" data-toggle="collapse" data-target="#collapse{{post.id}}" aria-expanded="false" aria-controls="collapse{{post.id}}">
+                        コメント表示/非表示
+                    </button>
+                    <div class="collapse" id="collapse{{post.id}}">
+                        <ul class="list-group list-group-item-light">
+                            {% if post.comment_set.all %}
+                                {% for comment in post.comment_set.all %}
+                                <li class="list-group-item">
+                                    <img class="avatar" src={{comment.user.avatar.url}}>
+                                    <span>{{ comment.user }}</span><br>
+                                    <p class="my-1">{{ comment.body }}</p>
+                                </li>
+                                {% endfor %}
+                            {% endif %}
+                        </ul>    
+                    </div>
+                    <form method="POST" action="">
+                        {% csrf_token %}
+                        <input type="hidden" name="post_id" value={{post.id}}>
+                        {% render_field c_form.body class='form-control' %}
+                        <button type="submit" name="submit_c_form" class="btn btn-primary">送信</button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+<!-- {% block scripts %}
+<script>
+
+</script>
+      
+{% endblock scripts %}
+           -->
+
+

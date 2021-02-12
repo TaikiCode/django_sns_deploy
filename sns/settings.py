@@ -138,8 +138,8 @@ MEDIA_URL = '/media/'
 
 # ログイン機能
 LOGIN_URL = 'accounts:login'
-LOGIN_REDIRECT_URL = 'profiles:index'
-LOGOUT_REDIRECT_URL = 'profiles:index'
+LOGIN_REDIRECT_URL = 'posts:home'
+LOGOUT_REDIRECT_URL = 'accounts:login'
 
 
 
