@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load widget_tweaks %}
 
+{% block title %}
+Home
+{% endblock title %}
+
 
 {% block content %}
 
@@ -45,8 +49,10 @@
                             <p class="card-text"><small class="text-muted">{{ post.author.user }} - {{ post.created|timesince}}前</small></p>
                         </div>
                         <div class="col-6 col-md-4 text-right">
-                            <a href="#" class="btn">編集</a>
-                            <a href="#" class="btn">削除</a>
+                            {% ifequal request.user post.author.user %}
+                                <a href="{% url 'posts:post-update' post.pk %}" class="btn">編集</a>
+                                <a href="{% url 'posts:post-delete' post.pk %}" class="btn">削除</a>
+                            {% endifequal %}
                         </div>
                     </div>
                 </div>
@@ -56,7 +62,7 @@
                 <div class="card-body">
                     <p class="card-text">{{ post.content }}</p>
 
-                    <i class="fa fa-comment"></i>
+                    <i class="fa fa-comments-o"></i> <span>{{ post.num_comments }}</span>   
                     <i class="fa fa-heart"></i>
                 </div>
                 <div class="card-footer">

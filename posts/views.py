@@ -1,4 +1,9 @@
 from django.shortcuts import render
+from django.urls import reverse_lazy
+from django.views.generic import UpdateView, DeleteView
+from django.contrib import messages
+
+
 
 from .models import Post, Like
 from .forms import PostModelForm, CommentModelForm
@@ -48,3 +53,34 @@ def post_comment_create_and_list_view(request):
     return render(request, 'posts/home.html', context)
             
 
+class PostUpdateView(UpdateView):
+    form_class = PostModelForm
+    model = Post
+    template_name = 'posts/update.html'
+    success_url = reverse_lazy('posts:home')
+    
+    def form_valid(self, form):
+        profile = Profile.objects.get(user=self.request.user)
+        # 投稿者本人しか編集できないようにする
+        if form.instance.author == profile:
+            return super().form_valid(form)
+        else:
+            form.add_error(None, '権限がありません。')
+            return super().form_valid(form)
+    
+
+class PostDeleteView(DeleteView):
+    model = Post
+    template_name = 'posts/confirm_del.html'
+    success_url = reverse_lazy('posts:home')
+    
+    def get_object(self, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        obj = Post.objects.get(pk=pk)
+        # 投稿者本人しか編集できないようにする
+        if not obj.author.user == self.request.user:
+            messages.warning(self.request, '権限がありません。')
+        return obj
+            
+        
+               
