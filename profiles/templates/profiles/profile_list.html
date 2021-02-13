@@ -14,7 +14,9 @@ rel_sender: 申請してきたユーザー
 {% block content %}
 
     {% if is_empty %}
-    <h1>該当するユーザーが存在しません。</h1>
+        <div class="alert alert-warning" role="alert">
+            <h1 class="text-center">現在、他のユーザーはいません。</h1>
+        </div>
     {% endif %}
 
     <div class="container-fluid mt-5">

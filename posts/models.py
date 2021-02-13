@@ -3,7 +3,6 @@ from django.core.validators import FileExtensionValidator
 from profiles.models import Profile
 
 
-
 class Post(models.Model):
     '''
     投稿モデル
@@ -45,8 +44,8 @@ class Comment(models.Model):
 
 
 LIKE_CHOICES = (
-    ('Like', 'Like'),
-    ('Unlike', 'Unlike')
+    ('Like', 'いいね'),
+    ('Unlike', '解除')
 )
 
 
@@ -59,4 +58,3 @@ class Like(models.Model):
     
     def __str__(self):
         return f"{self.user}--{self.post}--{self.value}"
-

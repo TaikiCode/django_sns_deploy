@@ -60,10 +60,27 @@ Home
                 <img class="card-img-top" src="{{ post.image.url }}" alt="">
                 {% endif %}
                 <div class="card-body">
-                    <p class="card-text">{{ post.content }}</p>
 
-                    <i class="fa fa-comments-o"></i> <span>{{ post.num_comments }}</span>   
-                    <i class="fa fa-heart"></i>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <p class="card-text">{{ post.content }}</p>
+                            <i class="fa fa-comments-o"></i> <span>{{ post.num_comments }}</span>   
+                            <i class="fa fa-heart"></i> <span class="like-count{{post.id}}">{{ post.num_likes }}</span>    
+                        </div>
+                        <div class="col-md-3 text-right">
+                            <form action="{% url 'posts:like-post' %}" method="POST" id="{{ post.id }}">
+                                {% csrf_token %}
+                                <input type="hidden" name="post_id" value={{post.id}}> 
+                                <button type="submit" class="btn btn-danger like-btn{{post.id}}">
+                                    {% if profile not in post.liked.all %}
+                                     <i class="fa fa-thumbs-up"></i> いいね
+                                    {% else %}
+                                     <i class="fa fa-thumbs-down"></i> 解除
+                                    {% endif %}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-footer">
                     <button type="button" class="btn btn-light text-muted" data-toggle="collapse" data-target="#collapse{{post.id}}" aria-expanded="false" aria-controls="collapse{{post.id}}">

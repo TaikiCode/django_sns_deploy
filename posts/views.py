@@ -1,10 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
+from django.http import JsonResponse
 from django.views.generic import UpdateView, DeleteView
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-
 from .models import Post, Like
 from .forms import PostModelForm, CommentModelForm
 from profiles.models import Profile
@@ -80,6 +80,58 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
         if not obj.author.user == self.request.user:
             messages.warning(self.request, '権限がありません。')
         return obj
-            
+    
+
+@login_required
+def like_post(request):
+    user = request.user
+    if request.method == 'POST':
+        post_id = request.POST.get('post_id')
+        post_obj = Post.objects.get(id=post_id)
+        profile = Profile.objects.get(user=user)
         
-               
+        # 一度しかlikeできない、2回目は解除
+        if profile in post_obj.liked.all():
+            post_obj.liked.remove(profile)
+        else:
+            post_obj.liked.add(profile)
+            
+        like, created = Like.objects.get_or_create(user=profile, post_id=post_id)
+        '''
+        like：オブジェクト
+        created：真偽値（getの場合false、createの場合true）
+        '''
+        
+        # すでにオブジェクトが存在する場合
+        if not created:
+            if like.value == 'Like':
+                like.value = 'Unlike'
+            else:
+                like.value = 'Like'
+        # 初めてLikeする場合
+        else:
+            like.value = 'Like'      
+            post_obj.save() 
+            like.save() 
+        
+        data = {
+            'value': like.value,
+            'likes': post_obj.liked.all().count()
+        }    
+        return JsonResponse(data, safe=False)
+    return redirect('posts:home')
+         
+                
+       
+       
+                    
+       
+           
+            
+     
+        
+                    
+  
+                
+            
+            
