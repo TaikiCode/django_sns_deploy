@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}
+User
+{% endblock title %}
+
+<!-- 
+object_list: 自分以外の全てのユーザー
+rel_receiver: 申請先のユーザー
+rel_sender: 申請してきたユーザー
+ -->
+
+
+{% block content %}
+
+    {% if is_empty %}
+    <h1>該当するユーザーが存在しません。</h1>
+    {% endif %}
+
+    <div class="container-fluid mt-5">
+        <div class="row justify-content-center">
+            {% for obj in object_list %}
+            <div class="col-md-8 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row text-center align-items-center">
+                            <div class="col-md-3">
+                                <img class="p_avatar" src="{{ obj.avatar.url }}" alt="">
+                            </div>
+                            <div class="col-md-5">
+                                <span class="text-muted">ユーザー名：</span>
+                                <h3>{{ obj.user }}</h3>
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-primary px-2"><i class="fa fa-search-plus"></i> もっと見る</button>
+                            </div>
+                            <div class="col-md-2">
+                                {% if obj.user not in rel_receiver and obj.user not in rel_sender %}
+                                <form action="" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="profile_pk" value={{obj.pk}}>
+                                    <button type="submit" class="btn btn-outline-primary"><i class="fa fa-user-plus"></i> 友達申請</button>
+                                </form>
+                                {% endif %}
+                                {% if obj.user in rel_receiver and request.user not in obj.friends.all %}
+                                    <button type="submit" class="btn btn-outline-secondary disabled" aria-disabled="true">承認待ち</button>
+                                {% endif %}
+                                {% if request.user in obj.friends.all %}
+                                    <form action="" method="POST">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="profile_pk" value={{obj.pk}}>
+                                        <button type="submit" class="btn btn-outline-danger"><i class="fa fa-plus"></i> 友達解除</button>
+                                    </form>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    
+   
+        
+    
+
+    
+
+
+ 
+
+
+
+{% endblock content %}

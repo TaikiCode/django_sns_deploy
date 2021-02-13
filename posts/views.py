@@ -2,16 +2,15 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import UpdateView, DeleteView
 from django.contrib import messages
-
-
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Post, Like
 from .forms import PostModelForm, CommentModelForm
 from profiles.models import Profile
 
 
-
-
+@login_required
 def post_comment_create_and_list_view(request):
     '''
     新規投稿、コメント投稿、一覧表示
@@ -53,7 +52,7 @@ def post_comment_create_and_list_view(request):
     return render(request, 'posts/home.html', context)
             
 
-class PostUpdateView(UpdateView):
+class PostUpdateView(LoginRequiredMixin, UpdateView):
     form_class = PostModelForm
     model = Post
     template_name = 'posts/update.html'
@@ -69,7 +68,7 @@ class PostUpdateView(UpdateView):
             return super().form_valid(form)
     
 
-class PostDeleteView(DeleteView):
+class PostDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
     template_name = 'posts/confirm_del.html'
     success_url = reverse_lazy('posts:home')

@@ -7,5 +7,6 @@ app_name = 'profiles'
 
 
 urlpatterns = [
-    path('', views.index, name='index')
+    path('my-profile/', views.my_profile_view, name='my-profile'),
+    path('profiles/', views.ProfileListView.as_view(), name='all_profiles')
 ]

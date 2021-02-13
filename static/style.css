@@ -1,6 +1,8 @@
-/* body {
-    background-color: blue;
-} */
+body {
+    /* background-color: #fffff0; */
+    background-color: #f8f8ff;
+
+}
 
 nav .navbar-brand {
   font-size: 1.5rem;
@@ -48,4 +50,9 @@ nav .nav-item {
     border-radius: 50%;
 }
 
+.p_avatar {
+    width: 65%;
+    height: 65%;
+    border-radius: 50%;
+}
   
