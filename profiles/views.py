@@ -67,3 +67,46 @@ class ProfileListView(LoginRequiredMixin, ListView):
         if len(self.get_queryset()) == 0:  # 自分以外ユーザーが存在しない場合
             context['is_empty'] = True
         return context
+
+
+class ProfileDetailView(LoginRequiredMixin, DetailView):
+    '''
+    特定のユーザーの情報
+    return (
+        rel_receiver: 申請したユーザーのユーザー名
+        rel_sender: 申請してきたユーザーのユーザー名
+        posts: そのユーザーの全ての投稿 
+        len_posts: そのユーザーの投稿があるかどうか（真偽値）
+    )
+    '''
+    model = Profile
+    template_name = 'profiles/profile_detail.html'
+    
+    def get_object(self):
+        slug = self.kwargs.get('slug')
+        profile = Profile.objects.get(slug=slug)  # slugから特定のユーザーを取得
+        return profile
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = User.objects.get(username__iexact=self.request.user)
+        profile = Profile.objects.get(user=user)
+        rel_r = Relationship.objects.filter(sender=profile)
+        rel_s = Relationship.objects.filter(receiver=profile)
+        rel_receiver = []
+        for item in rel_r:
+            rel_receiver.append(item.receiver.user)
+        rel_sender = []
+        for item in rel_s:
+            rel_sender.append(item.sender.user)
+        context['rel_receiver'] = rel_receiver
+        context['rel_sender'] = rel_sender
+        context['posts'] = self.get_object().get_all_authors_posts()
+        context['len_posts'] = True if len(self.get_object().get_all_authors_posts()) > 0 else False
+        return context
+        
+        
+        
+        
+        
+        

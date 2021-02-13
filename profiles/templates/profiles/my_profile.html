@@ -78,7 +78,7 @@ My Profile
                                   </tr>
                                   <tr>
                                     <th scope="row">友達の数</th>
-                                    <td>0人</td>
+                                    <td>{{ get_friends_count }}人</td>
                                   </tr>
                                   <tr>
                                     <th scope="row">友達</th>
@@ -86,17 +86,16 @@ My Profile
                                   </tr>
                                   <tr>
                                     <th scope="row">投稿の数</th>
-                                    <td>0人</td>
+                                    <td>{{ get_posts_count }}</td>
                                   </tr>
                                   <tr>
                                     <th scope="row">いいねした数</th>
-                                    <td>0人</td>
+                                    <td>{{ get_likes_given_count }}</td>
                                   </tr>
                                   <tr>
                                     <th scope="row">いいねされた数</th>
-                                    <td>0人</td>
+                                    <td>{{ get_likes_recieved_count}}</td>
                                   </tr>
-
                                 </tbody>
                               </table>
                         </div>

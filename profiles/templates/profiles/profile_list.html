@@ -32,7 +32,9 @@ rel_sender: 申請してきたユーザー
                                 <h3>{{ obj.user }}</h3>
                             </div>
                             <div class="col-md-2">
-                                <button class="btn btn-primary px-2"><i class="fa fa-search-plus"></i> もっと見る</button>
+                                <a href={{obj.get_absolute_url}}>
+                                    <button class="btn btn-primary px-2"><i class="fa fa-search-plus"></i> もっと見る</button>
+                                </a>
                             </div>
                             <div class="col-md-2">
                                 {% if obj.user not in rel_receiver and obj.user not in rel_sender %}

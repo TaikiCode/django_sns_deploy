@@ -54,6 +54,13 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
     
+    def get_absolute_url(self):
+        '''
+        Modelの詳細ページのURLを返す
+        '''
+        return reverse('profiles:profile-detail', kwargs={'slug': self.slug})
+    
+    
     def get_friends(self):
         '''
         全ての友達
@@ -78,7 +85,7 @@ class Profile(models.Model):
         '''
         return self.posts.all()
     
-    def get_likes_given_no(self):
+    def get_likes_given_count(self):
         '''
         全ての投稿の与えたいいね数
         '''
@@ -89,7 +96,7 @@ class Profile(models.Model):
                 total_liked += 1
         return total_liked
     
-    def get_likes_recieved_no(self):
+    def get_likes_recieved_count(self):
         '''
         全ての投稿の受け取ったいいね数
         '''
@@ -112,6 +119,15 @@ STATUS_CHOICES = (
     ('accepted', 'accepted')
 )
 
+class RelationshipManager(models.Manager):
+    def invitations_received(self, receiver):
+        '''
+        申請を承認する（acceptする前の状態）
+        '''
+        qs = Relationship.objects.filter(receiver=receiver, status='send')  
+        return qs
+    
+
 class Relationship(models.Model):
     '''
     関係性モデル
@@ -122,7 +138,10 @@ class Relationship(models.Model):
     updated = models.DateTimeField(auto_now=True) 
     created = models.DateTimeField(auto_now_add=True)
     
+    objects = RelationshipManager()
+    
     def __str__(self):
         return f"{self.sender}-{self.receiver}-{self.status}"
+    
     
     
