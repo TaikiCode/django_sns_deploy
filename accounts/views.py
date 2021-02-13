@@ -20,7 +20,7 @@ class Logout(LogoutView):
 class Signup(CreateView):
     form_class = SignUpForm
     template_name = 'accounts/signup.html'
-    success_url = reverse_lazy('profiles:index')
+    success_url = reverse_lazy('posts:home')
     
     def form_valid(self, form):
         user = form.save()

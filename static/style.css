@@ -50,6 +50,11 @@ nav .nav-item {
     border-radius: 50%;
 }
 
+.nav_avatar {
+    width: 5%;
+    border-radius: 50%;
+}
+
 .p_avatar {
     width: 65%;
     height: 65%;
@@ -60,3 +65,4 @@ nav .nav-item {
     width: 75%;
     border-radius: 50%;
 }
+

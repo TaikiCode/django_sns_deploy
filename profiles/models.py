@@ -122,7 +122,7 @@ STATUS_CHOICES = (
 class RelationshipManager(models.Manager):
     def invitations_received(self, receiver):
         '''
-        申請を承認する（acceptする前の状態）
+        申請を承認するユーザー（acceptする前の状態）
         '''
         qs = Relationship.objects.filter(receiver=receiver, status='send')  
         return qs
