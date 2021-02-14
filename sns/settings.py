@@ -30,11 +30,6 @@ INSTALLED_APPS = [
     'profiles',
     'posts',
     'accounts',
-    # django all-auth
-    # 'allauth',
-    # 'allauth.account',
-    # 'allauth.socialaccount',
-    # widget_tweeks
     'widget_tweaks',
 ]
 
@@ -67,11 +62,6 @@ TEMPLATES = [
         },
     },
 ]
-
-# AUTHENTICATION_BACKENDS = [
-#     'django.contrib.auth.backends.ModelBackend',
-#     'allauth.account.auth_backends.AuthenticationBackend',
-# ]
 
 
 WSGI_APPLICATION = 'sns.wsgi.application'
@@ -140,7 +130,6 @@ MEDIA_URL = '/media/'
 LOGIN_URL = 'accounts:login'
 LOGIN_REDIRECT_URL = 'posts:home'
 LOGOUT_REDIRECT_URL = 'accounts:login'
-
 
 
 SITE_ID = 1
