@@ -1,9 +1,8 @@
 from django.db import models
 from django.shortcuts import reverse
 from django.contrib.auth.models import User
-from django.template.defaultfilters import slugify
 from django.db.models import Q
-# from .utils import get_random_code
+import uuid
 
 
 class ProfileManager(models.Manager):
@@ -108,10 +107,12 @@ class Profile(models.Model):
     
 
     def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.user.username)
+        self.slug = str(uuid.uuid4())[:6]
+        ex = Profile.objects.filter(slug=self.slug).exists()
+        while ex:
+            self.slug = str(uuid.uuid4())[:6]
+            ex = Profile.objects.filter(slug=self.slug).exists()
         return super().save(*args, **kwargs)
-    
 
     
 STATUS_CHOICES = (

@@ -18,6 +18,10 @@ Detail
         <table class="table">
           <tbody>
             <tr>
+              <td scope="row">友達の数</td>
+              <td>{{ object.get_friends_count }}</td>
+            </tr>
+            <tr>
               <td scope="row">投稿の数</td>
               <td>{{ object.get_posts_count }}</td>
             </tr>
@@ -29,17 +33,13 @@ Detail
               <td scope="row">いいねをもらった数</td>
               <td>{{ object.get_likes_recieved_count }}</td>
             </tr>
-            <tr>
-              <td scope="row">友達の数</td>
-              <td>{{ object.get_friends_count }}</td>
-            </tr>
           </tbody>
         </table>
       </div>
     </div>
     <div class="col-12 col-md-6">
       {% for post in posts %}
-      <div class="card mb-3">
+      <div class="card mb-3 shadow rounded">
         <div class="card-header">
           <p class="card-text"><small class="text-muted">{{ post.created|timesince}}前</small></p>
         </div>
