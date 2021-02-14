@@ -17,7 +17,8 @@ Home
     {% endif %}
     <div class="row justify-content-center">
         <div class="col-12 col-md-7">
-            <div class="button mx-auto" data-toggle="collapse" data-target="#collapse_post" aria-expanded="false" aria-controls="collapse_post">
+            <div class="button mx-auto" data-toggle="collapse" data-target="#collapse_post" aria-expanded="false"
+                aria-controls="collapse_post">
                 <button class="btn btn-lg btn-outline-secondary btn-block mx-auto">
                     新規投稿
                 </button>
@@ -25,7 +26,7 @@ Home
             <div class="collapse" id="collapse_post">
                 <div class="card">
                     <div class="card-body pb-2">
-                        <form action="" method="POST" class='ui form' enctype="multipart/form-data">
+                        <form action="" method="POST" enctype="multipart/form-data">
                             {% csrf_token %}
                             <div>
                                 {% render_field p_form.content class='form-control' %}
@@ -35,23 +36,25 @@ Home
                             </div>
                             <hr>
                             <div class="text-center">
-                                <button class="btn btn-outline-secondary" type="submit" name="submit_p_form">投稿する</button>
-                            </div>                      
+                                <button class="btn btn-outline-secondary" type="submit"
+                                    name="submit_p_form">投稿する</button>
+                            </div>
                         </form>
                     </div>
-                </div>    
+                </div>
             </div>
-        {% for post in posts %}
+            {% for post in posts %}
             <div class="card my-3 shadow-lg rounded">
                 <div class="card-header">
                     <div class="row">
                         <div class="col-12 col-md-8 text-left">
-                            <p class="card-text"><small class="text-muted">{{ post.author.user }} - {{ post.created|timesince}}前</small></p>
+                            <p class="card-text"><small class="text-muted">{{ post.author.user }} -
+                                    {{ post.created|timesince}}前</small></p>
                         </div>
                         <div class="col-6 col-md-4 text-right">
                             {% ifequal request.user post.author.user %}
-                                <a href="{% url 'posts:post-update' post.pk %}" class="btn">編集</a>
-                                <a href="{% url 'posts:post-delete' post.pk %}" class="btn">削除</a>
+                            <a href="{% url 'posts:post-update' post.pk %}" class="btn">編集</a>
+                            <a href="{% url 'posts:post-delete' post.pk %}" class="btn">削除</a>
                             {% endifequal %}
                         </div>
                     </div>
@@ -64,18 +67,19 @@ Home
                     <div class="row">
                         <div class="col-md-9">
                             <p class="card-text">{{ post.content }}</p>
-                            <i class="fa fa-comments-o"></i> <span>{{ post.num_comments }}</span>   
-                            <i class="fa fa-heart"></i> <span class="like-count{{post.id}}">{{ post.num_likes }}</span>    
+                            <i class="fa fa-comments-o"></i> <span>{{ post.num_comments }}</span>
+                            <i class="fa fa-heart"></i> <span class="like-count{{post.id}}">{{ post.num_likes }}</span>
                         </div>
                         <div class="col-md-3 text-right">
-                            <form action="{% url 'posts:like-post' %}" method="POST" id="{{ post.id }}">
+                            <form action="{% url 'posts:like-post' %}" method="POST" class="like-form"
+                                id="{{ post.id }}">
                                 {% csrf_token %}
-                                <input type="hidden" name="post_id" value={{post.id}}> 
-                                <button type="submit" class="btn btn-danger like-btn{{post.id}}">
+                                <input type="hidden" name="post_id" value={{post.id}}>
+                                <button type="submit" class="btn btn-outline-danger like-btn{{post.id}}">
                                     {% if profile not in post.liked.all %}
-                                     <i class="fa fa-thumbs-up"></i> いいね
+                                    <i class="fa fa-thumbs-up"></i> いいね
                                     {% else %}
-                                     <i class="fa fa-thumbs-down"></i> 解除
+                                    <i class="fa fa-thumbs-down"></i> 解除
                                     {% endif %}
                                 </button>
                             </form>
@@ -83,21 +87,22 @@ Home
                     </div>
                 </div>
                 <div class="card-footer">
-                    <button type="button" class="btn btn-light text-muted" data-toggle="collapse" data-target="#collapse{{post.id}}" aria-expanded="false" aria-controls="collapse{{post.id}}">
+                    <button type="button" class="btn btn-light text-muted" data-toggle="collapse"
+                        data-target="#collapse{{post.id}}" aria-expanded="false" aria-controls="collapse{{post.id}}">
                         コメント表示/非表示
                     </button>
                     <div class="collapse" id="collapse{{post.id}}">
                         <ul class="list-group list-group-item-light">
                             {% if post.comment_set.all %}
-                                {% for comment in post.comment_set.all %}
-                                <li class="list-group-item">
-                                    <img class="avatar" src={{comment.user.avatar.url}}>
-                                    <span>{{ comment.user }}</span><br>
-                                    <p class="my-1">{{ comment.body }}</p>
-                                </li>
-                                {% endfor %}
+                            {% for comment in post.comment_set.all %}
+                            <li class="list-group-item">
+                                <img class="avatar" src={{comment.user.avatar.url}}>
+                                <span>{{ comment.user }}</span><br>
+                                <p class="my-1">{{ comment.body }}</p>
+                            </li>
+                            {% endfor %}
                             {% endif %}
-                        </ul>    
+                        </ul>
                     </div>
                     <form method="POST" action="">
                         {% csrf_token %}
@@ -107,19 +112,54 @@ Home
                     </form>
                 </div>
             </div>
-        {% endfor %}
+            {% endfor %}
         </div>
     </div>
 </div>
 
 {% endblock content %}
 
-<!-- {% block scripts %}
+{% block scripts %}
+
 <script>
+    $(document).ready(function () {
+        $('.like-form').submit(function (e) {
+            e.preventDefault()
 
+            const post_id = $(this).attr('id')
+            const likeText = $(`.like-btn${post_id}`).text()
+            const trim = $.trim(likeText)
+            const url = $(this).attr('action')
+            let res;
+            const likes = $(`.like-count${post_id}`).text()
+            const trimCount = parseInt(likes)
+
+            const like = '<i class="fa fa-thumbs-up"></i> いいね'
+            const unlike = '<i class="fa fa-thumbs-down"></i> 解除'
+
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {
+                    'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+                    'post_id': post_id,
+                },
+                success: function (response) {
+                    if (trim === '解除') {
+                        $(`.like-btn${post_id}`).html(like)
+                        res = trimCount - 1
+                    } else {
+                        $(`.like-btn${post_id}`).html(unlike)
+                        res = trimCount + 1
+                    }
+                    $(`.like-count${post_id}`).text(res)
+                },
+                error: function (response) {
+                    console.log('error', response)
+                }
+            })
+        })
+    })
 </script>
-      
+
 {% endblock scripts %}
-           -->
-
-
