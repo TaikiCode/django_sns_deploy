@@ -46,17 +46,13 @@ Home
             {% for post in posts %}
             <div class="card my-3 shadow-lg rounded">
                 <div class="card-header">
-                    <div class="row">
-                        <div class="col-12 col-md-8 text-left">
-                            <p class="card-text"><small class="text-muted">{{ post.author.user }} -
-                                    {{ post.created|timesince}}前</small></p>
-                        </div>
-                        <div class="col-6 col-md-4 text-right">
-                            {% ifequal request.user post.author.user %}
-                            <a href="{% url 'posts:post-update' post.pk %}" class="btn">編集</a>
-                            <a href="{% url 'posts:post-delete' post.pk %}" class="btn">削除</a>
-                            {% endifequal %}
-                        </div>
+                    <small class="text-muted">{{ post.author.user }} :
+                        {{ post.created|timesince}}前</small>
+                    <div class="float-right">
+                        {% ifequal request.user post.author.user %}
+                        <a href="{% url 'posts:post-update' post.pk %}" class="btn">編集</a>
+                        <a href="{% url 'posts:post-delete' post.pk %}" class="btn">削除</a>
+                        {% endifequal %}
                     </div>
                 </div>
                 {% if post.image %}
