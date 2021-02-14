@@ -30,11 +30,6 @@ INSTALLED_APPS = [
     'profiles',
     'posts',
     'accounts',
-    # django all-auth
-    # 'allauth',
-    # 'allauth.account',
-    # 'allauth.socialaccount',
-    # widget_tweeks
     'widget_tweaks',
 ]
 
@@ -62,16 +57,11 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                
+                'profiles.context_processors.invitations_received_count'  # 追加 
             ],
         },
     },
 ]
-
-# AUTHENTICATION_BACKENDS = [
-#     'django.contrib.auth.backends.ModelBackend',
-#     'allauth.account.auth_backends.AuthenticationBackend',
-# ]
 
 
 WSGI_APPLICATION = 'sns.wsgi.application'
@@ -138,9 +128,8 @@ MEDIA_URL = '/media/'
 
 # ログイン機能
 LOGIN_URL = 'accounts:login'
-LOGIN_REDIRECT_URL = 'profiles:index'
-LOGOUT_REDIRECT_URL = 'profiles:index'
-
+LOGIN_REDIRECT_URL = 'posts:home'
+LOGOUT_REDIRECT_URL = 'accounts:login'
 
 
 SITE_ID = 1
