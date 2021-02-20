@@ -5,10 +5,6 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = 'zj&40=q5_1z%@850w4&w$h4k@lr+^#e5m%s08q(_+kk3q(e6cc'
 
 # DEBUG = True
@@ -35,6 +31,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -65,16 +62,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'sns.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
 
 
 # Password validation
@@ -115,9 +102,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')
-]
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 
 # media
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -130,6 +115,17 @@ LOGIN_REDIRECT_URL = 'posts:home'
 LOGOUT_REDIRECT_URL = 'accounts:login'
 
 # デプロイ設定
+
+import dj_database_url
+
+DATABASES = { 'default': dj_database_url.config() } 
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FOWARDED_PROTO', 'https')
+
+ALLOWED_HOSTS = ['*']
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 DEBUG = False
 
 try: 
@@ -137,19 +133,5 @@ try:
 except ImportError:
     pass
 
-# ローカル用設定
-if DEBUG:
-    ALLOWED_HOSTS = ['*']
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-else:
-    import environ
-    env = environ.Env()
-    env.read_env(os.path.join(BASE_DIR, '.env'))
-    
-    SECRET_KEY = env('SECRET_KEY')
-    ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
-    
-    STATIC_ROOT = '/user/share/nginx/html/static'
-    MEDIA_ROOT = '/user/share/nginx/html/media'
-    
-    
+if not DEBUG:
+    SECRET_KEY = os.environ['SECRET_KEY']
