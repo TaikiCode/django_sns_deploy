@@ -1,0 +1,6 @@
+db.splite3
+__pycach__
+.DS_Store
+media
+local_settings.py
+.env

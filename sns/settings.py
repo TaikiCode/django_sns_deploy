@@ -9,12 +9,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'zj&40=q5_1z%@850w4&w$h4k@lr+^#e5m%s08q(_+kk3q(e6cc'
+# SECRET_KEY = 'zj&40=q5_1z%@850w4&w$h4k@lr+^#e5m%s08q(_+kk3q(e6cc'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -121,9 +120,8 @@ STATICFILES_DIRS = [
 ]
 
 # media
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
-
 
 
 # ログイン機能
@@ -131,5 +129,27 @@ LOGIN_URL = 'accounts:login'
 LOGIN_REDIRECT_URL = 'posts:home'
 LOGOUT_REDIRECT_URL = 'accounts:login'
 
+# デプロイ設定
+DEBUG = False
 
-SITE_ID = 1
+try: 
+    from .local_settings import *
+except ImportError:
+    pass
+
+# ローカル用設定
+if DEBUG:
+    ALLOWED_HOSTS = ['*']
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+else:
+    import environ
+    env = environ.Env()
+    env.read_env(os.path.join(BASE_DIR, '.env'))
+    
+    SECRET_KEY = env('SECRET_KEY')
+    ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
+    
+    STATIC_ROOT = '/user/share/nginx/html/static'
+    MEDIA_ROOT = '/user/share/nginx/html/media'
+    
+    
