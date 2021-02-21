@@ -102,7 +102,11 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 
 # S3の記述
 AWS_STORAGE_BUCKET_NAME = 'django-simple-sns'
+AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
+AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
+
 AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+
 AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl': 'max-age=86400',  # 1日はそのキャッシュを使う
 }
@@ -111,7 +115,6 @@ AWS_LOCATION = 'media'
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-# MEDIA_URL = '/media/'
 MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
 
 
@@ -122,13 +125,36 @@ LOGOUT_REDIRECT_URL = 'accounts:login'
 
 # デプロイ設定
 
-import dj_database_url
+from socket import gethostname
+hostname = gethostname()
 
-DATABASES = { 'default': dj_database_url.config() } 
+if "COMPUTER-NAME" in hostname:
+    # デバッグ環境
+    # DEBUG = True 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
+    ALLOWED_HOSTS = ['*'] 
+else:
+    # 本番環境
+    # DEBUG = False
+    import dj_database_url
+    db_from_env = dj_database_url.config()
+    DATABASES = {
+        'default': dj_database_url.config()
+    }
+    ALLOWED_HOSTS = ['*']
+
+# import dj_database_url
+
+# DATABASES = { 'default': dj_database_url.config() } 
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FOWARDED_PROTO', 'https')
 
-ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = ['*']
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
@@ -137,12 +163,13 @@ SITE_ID = 1
 
 DEBUG = False
 
-try: 
-    from .local_settings import *
-except ImportError:
-    pass
+# try: 
+#     from .local_settings import *
+# except ImportError:
+#     pass
 
 if not DEBUG:
     SECRET_KEY = os.environ['SECRET_KEY']
     AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
     AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
+    
