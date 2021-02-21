@@ -124,49 +124,25 @@ LOGIN_REDIRECT_URL = 'posts:home'
 LOGOUT_REDIRECT_URL = 'accounts:login'
 
 # デプロイ設定
+DEBUG = False
 
-from socket import gethostname
-hostname = gethostname()
+import dj_database_url
 
-if "COMPUTER-NAME" in hostname:
-    # デバッグ環境
-    # DEBUG = True 
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }
-    }
-    ALLOWED_HOSTS = ['*'] 
-else:
-    # 本番環境
-    # DEBUG = False
-    import dj_database_url
-    db_from_env = dj_database_url.config()
-    DATABASES = {
-        'default': dj_database_url.config()
-    }
-    ALLOWED_HOSTS = ['*']
-
-# import dj_database_url
-
-# DATABASES = { 'default': dj_database_url.config() } 
+db_from_env = dj_database_url.config()
+DATABASES = { 'default': dj_database_url.config() } 
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FOWARDED_PROTO', 'https')
 
-# ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*']
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 SITE_ID = 1
 
-
-DEBUG = False
-
-# try: 
-#     from .local_settings import *
-# except ImportError:
-#     pass
+try: 
+    from .local_settings import *
+except ImportError:
+    pass
 
 if not DEBUG:
     SECRET_KEY = os.environ['SECRET_KEY']
