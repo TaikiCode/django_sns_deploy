@@ -15,26 +15,26 @@ Login
     <form method="POST" class="form-auth">
       {% csrf_token %}
       <div class="form-label-group">
-        {% render_field form.username class='form-control'
-        placeholder='ユーザー名' %}
+        {% render_field form.username class='form-control' placeholder='ユーザー名' %}
       </div>
 
       <div class="form-label-group">
-        {% render_field form.password class='form-control'
-        placeholder='パスワード' %}
+        {% render_field form.password class='form-control' placeholder='パスワード' %}
       </div>
 
       <!-- エラー表示開始 -->
       {% if form.errors %}
       <div class="errorlist">
-        {% for errors in form.errors.values %} {% for error in errors %}
-        <div class="alert alert-danger" role="alert">{{ error }}</div>
-        {% endfor %} {% endfor %}
+        {% for errors in form.errors.values %} 
+            {% for error in errors %}
+            <div class="alert alert-danger" role="alert">{{ error }}</div>
+            {% endfor %} 
+        {% endfor %}
       </div>
       {% endif %}
       <!-- エラー表示終了 -->
 
-      <b class="text-center">
+      <b class="text-center my-2">
         <a href="{% url 'accounts:signup' %}">アカウントがない方はこちら</a>
       </b>
 
