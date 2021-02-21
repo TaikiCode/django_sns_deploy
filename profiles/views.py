@@ -49,7 +49,7 @@ class ProfileListView(LoginRequiredMixin, ListView):
         友達申請したユーザー、友達申請してきたユーザー名を取得
         '''
         context = super().get_context_data(**kwargs)
-        user = User.objects.get(username__iexact=self.request.user)
+        user = User.objects.get(username__iexact=str(self.request.user))
         profile = Profile.objects.get(user=user)  # 自分のプロフィール
         rel_r = Relationship.objects.filter(sender=profile)  # 申請した相手の情報
         rel_s = Relationship.objects.filter(receiver=profile)  # 申請してきた相手の情報
@@ -89,7 +89,7 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user = User.objects.get(username__iexact=self.request.user)
+        user = User.objects.get(username__iexact=str(self.request.user))
         profile = Profile.objects.get(user=user)
         rel_r = Relationship.objects.filter(sender=profile)
         rel_s = Relationship.objects.filter(receiver=profile)
