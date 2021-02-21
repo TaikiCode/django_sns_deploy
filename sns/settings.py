@@ -126,10 +126,10 @@ LOGOUT_REDIRECT_URL = 'accounts:login'
 # デプロイ設定
 DEBUG = False
 
-# import dj_database_url
+import dj_database_url
+db_from_env = dj_database_url.config(conn_max_age=600)
+DATABASES['default'].update(db_from_env)
 
-# db_from_env = dj_database_url.config()
-# DATABASES = { 'default': dj_database_url.config() } 
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FOWARDED_PROTO', 'https')
 
@@ -145,8 +145,6 @@ except ImportError:
     pass
 
 if not DEBUG:
-    import django_heroku
-    django_heroku.settings(locals())
     SECRET_KEY = os.environ['SECRET_KEY']
     AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
     AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
