@@ -34,16 +34,15 @@ Login
       {% endif %}
       <!-- エラー表示終了 -->
 
-      <p class="text-center">
-        <a href="{% url 'accounts:signup' %}">アカウントがない方はこちら</a>
-      </p>
-
       <div class="button mx-auto">
         <button class="btn btn-lg btn-primary btn-block mx-auto" type="submit">
           ログイン
         </button>
       </div>
     </form>
+    <p class="text-center">
+        <a href="{% url 'accounts:signup' %}">アカウントがない方はこちら</a>
+    </p>
   </div>
 </div>
 
