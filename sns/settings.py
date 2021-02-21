@@ -126,6 +126,12 @@ LOGOUT_REDIRECT_URL = 'accounts:login'
 # デプロイ設定
 DEBUG = False
 
+try: 
+    from .local_settings import *
+except ImportError:
+    pass
+
+
 import dj_database_url
 db_from_env = dj_database_url.config(conn_max_age=600)
 DATABASES['default'].update(db_from_env)
@@ -139,10 +145,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 SITE_ID = 1
 
-try: 
-    from .local_settings import *
-except ImportError:
-    pass
 
 if not DEBUG:
     SECRET_KEY = os.environ['SECRET_KEY']
